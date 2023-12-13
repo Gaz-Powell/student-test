@@ -1,0 +1,41 @@
+﻿@model StudentsViewModel;
+@{
+    ViewData["Title"] = "Students";
+}
+
+<div>
+    <div>
+        <a class="btn btn-large btn-primary" asp-controller="Students" asp-action="Create">Add Student</a>
+    </div>
+    <table class="table">
+        <thead>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Date of Birth</th>
+            <th></th>
+        </thead>
+        <tbody>
+            @foreach (var student in Model.Students)
+            {
+                <tr>
+                    <th scope="row">
+                        @student.Id
+                    </th>
+                    <td>
+                        <a asp-controller="Students" asp-action="Student" asp-route-id="@student.Id">
+                            @student.FirstName @student.LastName
+                        </a>
+                    </td>
+                    <td>
+                        @student.DateOfBirth.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        <a asp-controller="Students" asp-action="Student" asp-route-id="@student.Id">Edit</a>
+                        |
+                        <a asp-controller="Students" asp-action="ConfirmDelete" asp-route-id="@student.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
