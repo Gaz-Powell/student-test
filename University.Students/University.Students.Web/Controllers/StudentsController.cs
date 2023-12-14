@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using University.Students.DataProvider;
 using University.Students.Models;
 using University.Students.Web.Models;
@@ -34,7 +35,7 @@ namespace University.Students.Web.Controllers
         }
 
         [HttpGet("[controller]/{id:int}")]
-        public async Task<IActionResult> Student(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var student = await _studentsRepository.GetStudentByIdAsync(id);
 
@@ -43,12 +44,23 @@ namespace University.Students.Web.Controllers
                 return NotFound($"Unable to find student with ID {id}");
             }
 
+            var yearOfStudyOptions = new SelectList(
+                new List<SelectListItem> {
+                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
+                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
+                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
+                },
+                "Value", "Text"
+            );
+
             var model = new StudentViewModel
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
                 LastName = student.LastName,
-                DateOfBirth = student.DateOfBirth
+                DateOfBirth = student.DateOfBirth,
+                YearOfStudy = student.YearOfStudy,
+                YearOfStudyOptions = yearOfStudyOptions
             };
 
             return View(model);
@@ -57,7 +69,19 @@ namespace University.Students.Web.Controllers
         [HttpGet("[controller]/create")]
         public async Task<IActionResult> Create()
         {
-            var model = new StudentViewModel();
+            var yearOfStudyOptions = new SelectList(
+                new List<SelectListItem> {
+                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
+                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
+                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
+                },
+                "Value", "Text"
+            );
+
+            var model = new StudentViewModel
+            {
+                YearOfStudyOptions = yearOfStudyOptions
+            };
 
             return View(model);
         }
@@ -69,7 +93,8 @@ namespace University.Students.Web.Controllers
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth
+                DateOfBirth = request.DateOfBirth,
+                YearOfStudy = request.YearOfStudy
             };
 
             var newStudentId = await _studentsRepository.CreateStudentAsync(studentToCreate);
@@ -81,15 +106,7 @@ namespace University.Students.Web.Controllers
                 return View("Error");
             }
 
-            var model = new StudentViewModel
-            {
-                Id = newStudent.Id,
-                FirstName = newStudent.FirstName,
-                LastName = newStudent.LastName,
-                DateOfBirth = newStudent.DateOfBirth
-            };
-
-            return View("Student", model);
+            return RedirectToAction("Details", "Students", new { id = newStudentId });
         }
 
         [HttpPost("[controller]/update")]
@@ -100,12 +117,13 @@ namespace University.Students.Web.Controllers
                 Id = request.Id,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth
+                DateOfBirth = request.DateOfBirth,
+                YearOfStudy = request.YearOfStudy
             };
 
             await _studentsRepository.UpdateStudentAsync(studentToUpdate);
 
-            return View("Student", request);
+            return RedirectToAction("Details", "Students", new { id = request.Id });
         }
 
         [HttpGet("[controller]/{id:int}/confirm-delete")]
@@ -118,12 +136,23 @@ namespace University.Students.Web.Controllers
                 return NotFound($"Unable to find student with ID {id}");
             }
 
+            var yearOfStudyOptions = new SelectList(
+                new List<SelectListItem> {
+                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
+                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
+                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
+                },
+                "Value", "Text"
+            );
+
             var model = new StudentViewModel
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
                 LastName = student.LastName,
-                DateOfBirth = student.DateOfBirth
+                DateOfBirth = student.DateOfBirth,
+                YearOfStudy= student.YearOfStudy,
+                YearOfStudyOptions= yearOfStudyOptions
             };
 
             return View(model);

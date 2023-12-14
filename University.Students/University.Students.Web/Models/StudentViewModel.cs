@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace University.Students.Web.Models
 {
@@ -14,5 +15,10 @@ namespace University.Students.Web.Models
 
         [Display(Name = "Date of birth")]
         public DateTime DateOfBirth { get; set; }
+
+        [Display(Name = "Year of study")]
+        public string YearOfStudy { get; set; }
+
+        public SelectList YearOfStudyOptions { get; set; }
     }
 }
