@@ -1,4 +1,5 @@
 using University.Students.DataProvider.Infrastructure;
+using University.Students.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json").Build();
 
 builder.Services.AddDatabaseProvider(configuration);
+builder.Services.AddTransient<IStudentsService, StudentsService>();
 
 var app = builder.Build();
 

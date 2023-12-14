@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "University.Students.Web", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{17317A1F-9BA2-4564-BCE4-152F21737673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "University.Students.DataProvider", "University.Students.DataProvider\University.Students.DataProvider.csproj", "{255FC617-E08E-44BA-B1B4-DE3675A15636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "University.Students.DataProvider", "University.Students.DataProvider\University.Students.DataProvider.csproj", "{255FC617-E08E-44BA-B1B4-DE3675A15636}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "University.Students.Models", "University.Students.Models\University.Students.Models.csproj", "{8A9E56E1-3D39-4D7C-A2AD-75FB5FA30AAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "University.Students.Models", "University.Students.Models\University.Students.Models.csproj", "{8A9E56E1-3D39-4D7C-A2AD-75FB5FA30AAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

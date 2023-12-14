@@ -3,28 +3,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using University.Students.DataProvider;
 using University.Students.Models;
 using University.Students.Web.Models;
+using University.Students.Web.Services;
 
 namespace University.Students.Web.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly IStudentsRepository _studentsRepository;
+        private readonly IStudentsService _studentsService;
 
-        public StudentsController(IStudentsRepository studentsRepository)
+        public StudentsController(IStudentsService studentsService)
         {
-            _studentsRepository = studentsRepository ?? throw new ArgumentNullException(nameof(studentsRepository));
+            _studentsService = studentsService ?? throw new ArgumentNullException(nameof(studentsService));
         }
 
         [HttpGet("[controller]")]
         public async Task<IActionResult> Index()
         {
-            var students = (await _studentsRepository.GetStudentsAsync()).Select(s => new StudentViewModel
-            {
-                Id = s.Id,
-                FirstName = s.FirstName,
-                LastName = s.LastName,
-                DateOfBirth = s.DateOfBirth
-            }).ToList();
+            var students = await _studentsService.GetStudentsAsync();
 
             var model = new StudentsViewModel
             {
@@ -37,21 +32,14 @@ namespace University.Students.Web.Controllers
         [HttpGet("[controller]/{id:int}")]
         public async Task<IActionResult> Details(int id)
         {
-            var student = await _studentsRepository.GetStudentByIdAsync(id);
+            var student = await _studentsService.GetStudentByIdAsync(id);
 
             if (student == null)
             {
                 return NotFound($"Unable to find student with ID {id}");
             }
 
-            var yearOfStudyOptions = new SelectList(
-                new List<SelectListItem> {
-                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
-                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
-                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
-                },
-                "Value", "Text"
-            );
+            var yearOfStudyOptions = _studentsService.GetYearOfStudyOptions();
 
             var model = new StudentViewModel
             {
@@ -70,14 +58,7 @@ namespace University.Students.Web.Controllers
         [HttpGet("[controller]/create")]
         public async Task<IActionResult> Create()
         {
-            var yearOfStudyOptions = new SelectList(
-                new List<SelectListItem> {
-                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
-                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
-                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
-                },
-                "Value", "Text"
-            );
+            var yearOfStudyOptions = _studentsService.GetYearOfStudyOptions();
 
             var model = new StudentViewModel
             {
@@ -90,17 +71,14 @@ namespace University.Students.Web.Controllers
         [HttpPost("[controller]/create")]
         public async Task<IActionResult> Create(StudentViewModel request)
         {
-            var studentToCreate = new CreateStudent
+            if (request == null)
             {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth,
-                YearOfStudy = request.YearOfStudy
-            };
+                return BadRequest("Create student request was null");
+            }
+            
+            var newStudentId = await _studentsService.CreateStudentAsync(request);
 
-            var newStudentId = await _studentsRepository.CreateStudentAsync(studentToCreate);
-
-            var newStudent = await _studentsRepository.GetStudentByIdAsync(newStudentId);
+            var newStudent = await _studentsService.GetStudentByIdAsync(newStudentId);
 
             if (newStudent == null)
             {
@@ -113,16 +91,7 @@ namespace University.Students.Web.Controllers
         [HttpPost("[controller]/update")]
         public async Task<IActionResult> Update(StudentViewModel request)
         {
-            var studentToUpdate = new Student
-            {
-                Id = request.Id,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth,
-                YearOfStudy = request.YearOfStudy
-            };
-
-            await _studentsRepository.UpdateStudentAsync(studentToUpdate);
+            await _studentsService.UpdateStudentAsync(request);
 
             return RedirectToAction("Details", "Students", new { id = request.Id });
         }
@@ -130,21 +99,14 @@ namespace University.Students.Web.Controllers
         [HttpGet("[controller]/{id:int}/confirm-delete")]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
-            var student = await _studentsRepository.GetStudentByIdAsync(id);
+            var student = await _studentsService.GetStudentByIdAsync(id);
 
             if (student == null)
             {
                 return NotFound($"Unable to find student with ID {id}");
             }
 
-            var yearOfStudyOptions = new SelectList(
-                new List<SelectListItem> {
-                    new SelectListItem { Text = YearOfStudy.FirstYear, Value = YearOfStudy.FirstYear },
-                    new SelectListItem { Text = YearOfStudy.SecondYear, Value = YearOfStudy.SecondYear },
-                    new SelectListItem { Text = YearOfStudy.ThirdYear, Value = YearOfStudy.ThirdYear },
-                },
-                "Value", "Text"
-            );
+            var yearOfStudyOptions = _studentsService.GetYearOfStudyOptions();
 
             var model = new StudentViewModel
             {
@@ -162,7 +124,7 @@ namespace University.Students.Web.Controllers
         [HttpPost("[controller]/delete")]
         public async Task<IActionResult> Delete(StudentViewModel model)
         {
-            await _studentsRepository.DeleteStudentAsync(model.Id);
+            await _studentsService.DeleteStudentAsync(model.Id);
 
             return RedirectToAction("Index");
         }
