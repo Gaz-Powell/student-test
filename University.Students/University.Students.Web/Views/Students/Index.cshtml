@@ -22,7 +22,7 @@
                         @student.Id
                     </th>
                     <td>
-                        <a asp-controller="Students" asp-action="Student" asp-route-id="@student.Id">
+                        <a asp-controller="Students" asp-action="Details" asp-route-id="@student.Id">
                             @student.FirstName @student.LastName
                         </a>
                     </td>
@@ -30,7 +30,7 @@
                         @student.DateOfBirth.ToString("dd/MM/yyyy")
                     </td>
                     <td>
-                        <a asp-controller="Students" asp-action="Student" asp-route-id="@student.Id">Edit</a>
+                        <a asp-controller="Students" asp-action="Details" asp-route-id="@student.Id">Edit</a>
                         |
                         <a asp-controller="Students" asp-action="ConfirmDelete" asp-route-id="@student.Id">Delete</a>
                     </td>

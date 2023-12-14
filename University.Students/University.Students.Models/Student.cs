@@ -7,5 +7,6 @@
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string YearOfStudy { get; set; }
+        public IEnumerable<string> Subjects { get; set; }
     }
 }

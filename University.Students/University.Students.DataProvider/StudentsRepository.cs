@@ -22,12 +22,22 @@ namespace University.Students.DataProvider
 
         public async Task<Student> GetStudentByIdAsync(int id)
         {
-            const string procedureName = "dbo.uspGetStudentById";
+            const string studentProcedureName = "dbo.uspGetStudentById";
+            const string subjectProcedureName = "dbo.uspGetEnrolmentsByStudentId";
 
             var param = new { Id = id };
 
-            var student = (await _dbConnection.QueryAsync<Student>(procedureName, param, commandType: CommandType.StoredProcedure))
+            var student = (await _dbConnection.QueryAsync<Student>(studentProcedureName, param, commandType: CommandType.StoredProcedure))
                 .SingleOrDefault();
+
+            if (student == null)
+            {
+                throw new InvalidOperationException($"Unable to find student with ID {id}");
+            }
+
+            var enrolmentParam = new { StudentId = id };
+
+            student.Subjects = await _dbConnection.QueryAsync<string>(subjectProcedureName, enrolmentParam, commandType: CommandType.StoredProcedure);
 
             return student;
         }

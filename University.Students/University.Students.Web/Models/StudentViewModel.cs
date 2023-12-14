@@ -19,6 +19,8 @@ namespace University.Students.Web.Models
         [Display(Name = "Year of study")]
         public string YearOfStudy { get; set; }
 
+        public IEnumerable<string> Subjects { get; set; }
+
         public SelectList YearOfStudyOptions { get; set; }
     }
 }

@@ -35,6 +35,15 @@
                 @Html.DropDownListFor(Model => Model.YearOfStudy, Model.YearOfStudyOptions, new { @class = "form-control" })
             </div>
         </div>
+        <div class="row mb-3 w-50">
+            <h4>Subjects</h4>
+            <ul class="list-group">
+                @foreach(var subject in Model.Subjects)
+                {
+                    <li class="list-group-item">@subject</li>
+                }
+            </ul>
+        </div>
         <button class="btn btn-large btn-primary" type="submit">Update</button>
     </form>
 </div>

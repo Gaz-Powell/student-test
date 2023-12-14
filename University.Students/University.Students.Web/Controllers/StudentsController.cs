@@ -60,7 +60,8 @@ namespace University.Students.Web.Controllers
                 LastName = student.LastName,
                 DateOfBirth = student.DateOfBirth,
                 YearOfStudy = student.YearOfStudy,
-                YearOfStudyOptions = yearOfStudyOptions
+                YearOfStudyOptions = yearOfStudyOptions,
+                Subjects = student.Subjects
             };
 
             return View(model);
